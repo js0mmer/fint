@@ -1,27 +1,48 @@
 <link rel="import" href="../../bower_components/paper-audio-player/paper-audio-player.html">
-<dom-module id="user-view">
+
+<dom-module id="music-player">
   <template>
-  <paper-audio-player src="{{src}}" title="STING - Desert Rose" color="#F05C38"></paper-audio-player>
+    {{srcc}}
+    <audio controls>
+
+      <source src="{{srcc}}" type="audio/mpeg">
+    Your browser does not support the audio element.
+    </audio>
+  <paper-audio-player src="{{srcc}}" title="{{tittle}}" color="#F05C38"></paper-audio-player>
   </template>
 
   <script>
     Polymer({
-      is: 'user-view',
+      is: 'music-player',
       properties: {
-        src: {
+        srcc: {
           type: String,
-          observer: 'ready',
+          reflectToAttribute: true,
+
+        },
+        ytsrc: {
+          type: String,
+                reflectToAttribute: true,
+              
+
+        },
+        tittle: {
+          type: String,
+                reflectToAttribute: true,
+
         },
       },
       ready: function(){
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-               // Action to be performed when the document is read;
-            }
-        };
-        xhttp.open("GET", "", true);
-        xhttp.send();
+        var url = "http://localhost:8080/backend/index.php?url="+this.ytsrc;
+        console.log(this.ytsrc)
+        var client = new XMLHttpRequest();
+    client.open('GET', url);
+    client.onreadystatechange = function() {
+      this.srcc = client.responseText;
+      var array ={srcc: this.srcc, ytsrc: this.ytsrc, title:this.tittle};
+      console.log(array);
+    }
+    client.send();
 
 
 

@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/paper-styles/demo-pages.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="music-player.html">
 <dom-module id="fint-app">
   <template>
     <style>
@@ -51,6 +52,7 @@ paper-icon-button.rate-icon {
     <div class="card-content">
       <div class="rate-header">[[item.snippet.title]]</div>
     <a href="[[url(item.id.videoId)]]">  <div class="rate-name">Play</div></a>
+    <music-player tittle="[[item.snippet.title]]" href="[[url(item.id.videoId)]]"></music-player>
       <div>[[item.snippet.description]]</div>
     </div>
     <div class="card-actions">
@@ -69,8 +71,10 @@ paper-icon-button.rate-icon {
         var app = document.querySelector('#app');
         app.url = function (videoId) {
           return 'https://www.youtube.com/watch?v=' + videoId;
+        //  document.querySelector('music-player').href = 'https://www.youtube.com/watch?v=' + videoId;
         };
         app.params = {"part":"snippet", "q":"efwgre", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
+
       </script>
   </template>
 
@@ -83,7 +87,7 @@ paper-icon-button.rate-icon {
 
         keyword: {
           type: String,
-          value: 'yay! ',
+          value: ' ',
           observer: 'ready',
         },
       },
