@@ -1,3 +1,6 @@
+
+
+
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/webcomponentsjs/webcomponents-lite.js">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
@@ -6,7 +9,11 @@
 <link rel="import" href="../../bower_components/paper-styles/demo-pages.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="music-player.html">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
 <dom-module id="fint-app">
   <template>
     <style>
@@ -34,7 +41,11 @@ paper-icon-button.rate-icon {
 }
 </style>
     <h1>Fint - music for the masses..</h1>
-    <paper-input value="{{keyword::input}}"></paper-input>
+<h2>by Jeff Cheema</h2>
+<h3>It takes a while to load be patient..</h3>
+    <div><paper-input label="Search here.."value="{{keyword::input}}"></paper-input>
+    <paper-button raised on-tap='ready'>Search.</paper-button>
+  </div>
       <div class="horizontal-section-container">
         <template is="dom-bind" id="app">
 
@@ -52,8 +63,11 @@ paper-icon-button.rate-icon {
     <div class="card-content">
       <div class="rate-header">[[item.snippet.title]]</div>
     <a href="[[url(item.id.videoId)]]">  <div class="rate-name">Open in YouTube</div></a>
-  <iframe width="auto" height="auto" src="[[embed(item.id.videoId)]]" frameborder="0" allowfullscreen></iframe>
+        <a href="[[sURL(item.id.videoId)]]" download>  <div>Download</div></a>
+  <iframe width="0" height="0" src="[[embed(item.id.videoId)]]" frameborder="0" allowfullscreen></iframe>
+<paper-audio-player style="width:100%;" src="[[sURL(item.id.videoId)]]" title="[[item.snippet.title]]" color="#F05C38"></paper-audio-player>
     </div>
+
     <div class="card-actions">
 
     </div>
@@ -78,6 +92,12 @@ paper-icon-button.rate-icon {
         app.embed = function(videoId){
           return 'https://youtube.com/embed/' +videoId;
         };
+        app.sURL = function(videoId){
+var url ='https://www.youtube.com/watch?v=' + videoId;
+var endpoint ="/backend/index.php?url="+url;
+$.ajax({type: "GET", url: endpoint, async: false, dataType: "text", success: function (data, textStatus, jqXHR) {s = data;} });
+          return s;
+        };
         app.params = {"part":"snippet", "q":"efwgre", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
 
       </script>
@@ -92,9 +112,10 @@ paper-icon-button.rate-icon {
 
         keyword: {
           type: String,
-          value: ' ',
-          observer: 'ready',
+          value: 'Coldplay ',
+
         },
+
       },
       ready:function(){
         var app = document.querySelector('#app');
