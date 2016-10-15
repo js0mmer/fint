@@ -4,14 +4,20 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/webcomponentsjs/webcomponents-lite.js">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/paper-styles/demo-pages.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/page/page.js">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="music-player.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="stylesheet" type="text/css" href="styles.css">
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
 <dom-module id="fint-app">
@@ -40,12 +46,13 @@ paper-icon-button.rate-icon {
 --iron-icon-stroke-color: var(--paper-grey-600);
 }
 </style>
-    <h1>Fint - music for the masses..</h1>
-<h2>by Jeff Cheema</h2>
-<h3>It takes a while to load be patient..</h3>
-    <div><paper-input label="Search here.."value="{{keyword::input}}"></paper-input>
-    <paper-button raised on-tap='ready'>Search.</paper-button>
-  </div>
+  <paper-toolbar> <paper-button on-tap='init'> <h1>HPT</h1> </paper-button>  <div id="search"><paper-input label="Search here.."value="{{keyword::input}}" >
+<paper-icon-button suffix on-tap="ready" icon="search" alt="search" title="search">  </paper-icon-button>
+  </paper-input>
+
+</div> </paper-toolbar>
+
+
       <div class="horizontal-section-container">
         <template is="dom-bind" id="app">
 
@@ -55,31 +62,43 @@ paper-icon-button.rate-icon {
               handle-as="json"
               last-response="{{ajaxResponse}}"></iron-ajax>
 
+  <div id="playlist">
             <template is="dom-repeat" items="[[ajaxResponse.items]]">
+                <span id="list">
+              <paper-card class="rate">
+                <div class="rate-content">
+                  <div class="card-content">
+                    <div class="rate-header"> <a  href="[[sURL(item.id.videoId,item.snippet.title)]]">
+               <iron-icon  class="big"icon="av:play-circle-filled" ></iron-icon>
+                    </a>[[item.snippet.title]] </div>
 
 
-<paper-card class="rate">
-  <div class="rate-content">
-    <div class="card-content">
-      <div class="rate-header">[[item.snippet.title]]</div>
-    <a href="[[url(item.id.videoId)]]">  <div class="rate-name">Open in YouTube</div></a>
-        <a href="[[sURL(item.id.videoId)]]" download>  <div>Download</div></a>
-  <iframe width="0" height="0" src="[[embed(item.id.videoId)]]" frameborder="0" allowfullscreen></iframe>
-<paper-audio-player style="width:100%;" src="[[sURL(item.id.videoId)]]" title="[[item.snippet.title]]" color="#F05C38"></paper-audio-player>
-    </div>
 
-    <div class="card-actions">
 
-    </div>
-  </div>
-  <div class="rate-image" >
-    <paper-card>
-  <img src="[[item.snippet.thumbnails.high.url]]" style="width:100%;hieght:100%;sizing:cover;"></img>
-</paper-card>
-</div>
-</paper-card>
+
+                  <div class="card-actions">
+
+                  </div>
+                </div>
+                <div class="rate-image" >
+                  <paper-card>
+ <img src="[[item.snippet.thumbnails.high.url]]" style="width:100%;hieght:100%;sizing:cover;"></img>
+              </paper-card>
+              </div>
+              </paper-card>
+            </span>
+
+
+
             </template>
+            <paper-toolbar id="footer">
 
+              <audio id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+        <source type="audio/mp3" src="">
+        Sorry, your browser does not support HTML5 audio.
+    </audio>
+            </paper-toolbar>
+</div>
         </template>
       </div>
 
@@ -89,12 +108,27 @@ paper-icon-button.rate-icon {
           return 'https://www.youtube.com/watch?v=' + videoId;
         //  document.querySelector('music-player').href = 'https://www.youtube.com/watch?v=' + videoId;
         };
+        app.channel = function(channelId){
+          return '/#/channel/'+ channelId;
+        };
+        app.init = function(items){
+console.log(items)
+
+
+        };
+        app.current= function(title){
+document.getElementById('currently').innerHTML = title;
+
+        };
         app.embed = function(videoId){
           return 'https://youtube.com/embed/' +videoId;
         };
+
         app.sURL = function(videoId){
+
 var url ='https://www.youtube.com/watch?v=' + videoId;
 var endpoint ="/backend/index.php?url="+url;
+
 $.ajax({type: "GET", url: endpoint, async: false, dataType: "text", success: function (data, textStatus, jqXHR) {s = data;} });
           return s;
         };
@@ -112,7 +146,7 @@ $.ajax({type: "GET", url: endpoint, async: false, dataType: "text", success: fun
 
         keyword: {
           type: String,
-          value: 'Coldplay ',
+          value: 'Music',
 
         },
 
@@ -122,7 +156,49 @@ $.ajax({type: "GET", url: endpoint, async: false, dataType: "text", success: fun
 app.params = {"part":"snippet", "q":this.keyword, "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
 
 
+
       },
+      init: function(){
+        var audio;
+        var playlist;
+        var tracks;
+        var current;
+
+
+            current = 0;
+            audio = $('audio');
+            playlist = $('#playlist');
+            tracks = playlist.find('#list a');
+            len = tracks.length - 1;
+            audio[0].volume = .10;
+            audio[0].play();
+            playlist.find('a').click(function(e){
+                e.preventDefault();
+                link = $(this);
+                current = link.parent().index();
+                run(link, audio[0]);
+            });
+            audio[0].addEventListener('ended',function(e){
+                current++;
+                if(current == len){
+                    current = 0;
+                    link = playlist.find('a')[0];
+                }else{
+                    link = playlist.find('a')[current];
+                }
+                run($(link),audio[0]);
+            });
+
+        function run(link, player){
+                player.src = link.attr('href');
+                par = link.parent();
+                par.addClass('active').siblings().removeClass('active');
+                audio[0].load();
+                audio[0].play();
+        }
+
+      },
+
 
 
     });
