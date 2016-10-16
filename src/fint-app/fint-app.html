@@ -12,6 +12,8 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+
+<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../../bower_components/page/page.js">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
@@ -46,95 +48,105 @@ paper-icon-button.rate-icon {
 --iron-icon-stroke-color: var(--paper-grey-600);
 }
 </style>
-  <paper-toolbar> <paper-button on-tap='init'> <h1>HPT</h1> </paper-button>  <div id="search"><paper-input label="Search here.."value="{{keyword::input}}" >
-<paper-icon-button suffix on-tap="ready" icon="search" alt="search" title="search">  </paper-icon-button>
-  </paper-input>
+<paper-drawer-panel>
+  <paper-header-panel drawer>
+    <paper-toolbar>  <div id="search"><paper-input label="Search here.."value="{{keyword::input}}" >
+  <paper-icon-button suffix on-tap="ready" icon="search" alt="search" title="search">  </paper-icon-button>
+    </paper-input>
 
-</div> </paper-toolbar>
+  </div> </paper-toolbar>
+    <div> Nothing... </div>
+  </paper-header-panel>
+  <paper-header-panel main>
+    <paper-toolbar> <paper-button on-tap='init'> <h1>HPT</h1> </paper-button></paper-toolbar>
+    <div>
+          <div class="horizontal-section-container">
+            <template is="dom-bind" id="app">
+
+              <iron-ajax auto
+                  url="https://www.googleapis.com/youtube/v3/search"
+                  params='{{params}}'
+                  handle-as="json"
+                  last-response="{{ajaxResponse}}"></iron-ajax>
+
+      <div id="playlist">
+                <template is="dom-repeat" items="[[ajaxResponse.items]]">
+                    <span id="list">
+                  <paper-card class="rate">
+                    <div class="rate-content">
+                      <div class="card-content">
+                        <div class="rate-header"> <a  href="[[sURL(item.id.videoId,item.snippet.title)]]">
+                   <iron-icon  class="big"icon="av:play-circle-filled" ></iron-icon>
+                        </a>[[item.snippet.title]] </div>
 
 
-      <div class="horizontal-section-container">
-        <template is="dom-bind" id="app">
-
-          <iron-ajax auto
-              url="https://www.googleapis.com/youtube/v3/search"
-              params='{{params}}'
-              handle-as="json"
-              last-response="{{ajaxResponse}}"></iron-ajax>
-
-  <div id="playlist">
-            <template is="dom-repeat" items="[[ajaxResponse.items]]">
-                <span id="list">
-              <paper-card class="rate">
-                <div class="rate-content">
-                  <div class="card-content">
-                    <div class="rate-header"> <a  href="[[sURL(item.id.videoId,item.snippet.title)]]">
-               <iron-icon  class="big"icon="av:play-circle-filled" ></iron-icon>
-                    </a>[[item.snippet.title]] </div>
 
 
 
+                      <div class="card-actions">
 
-
-                  <div class="card-actions">
-
+                      </div>
+                    </div>
+                    <div class="rate-image" >
+                      <paper-card>
+     <img src="[[item.snippet.thumbnails.high.url]]" style="width:100%;hieght:100%;sizing:cover;"></img>
+                  </paper-card>
                   </div>
-                </div>
-                <div class="rate-image" >
-                  <paper-card>
- <img src="[[item.snippet.thumbnails.high.url]]" style="width:100%;hieght:100%;sizing:cover;"></img>
-              </paper-card>
-              </div>
-              </paper-card>
-            </span>
+                  </paper-card>
+                </span>
 
 
 
+                </template>
+                <paper-toolbar id="footer">
+
+                  <audio id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+            <source type="audio/mp3" src="">
+            Sorry, your browser does not support HTML5 audio.
+        </audio>
+                </paper-toolbar>
+    </div>
             </template>
-            <paper-toolbar id="footer">
+          </div>
 
-              <audio id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg">
-        <source type="audio/mp3" src="">
-        Sorry, your browser does not support HTML5 audio.
-    </audio>
-            </paper-toolbar>
-</div>
-        </template>
-      </div>
-
-      <script>
-        var app = document.querySelector('#app');
-        app.url = function (videoId) {
-          return 'https://www.youtube.com/watch?v=' + videoId;
-        //  document.querySelector('music-player').href = 'https://www.youtube.com/watch?v=' + videoId;
-        };
-        app.channel = function(channelId){
-          return '/#/channel/'+ channelId;
-        };
-        app.init = function(items){
-console.log(items)
+          <script>
+            var app = document.querySelector('#app');
+            app.url = function (videoId) {
+              return 'https://www.youtube.com/watch?v=' + videoId;
+            //  document.querySelector('music-player').href = 'https://www.youtube.com/watch?v=' + videoId;
+            };
+            app.channel = function(channelId){
+              return '/#/channel/'+ channelId;
+            };
+            app.init = function(items){
+    console.log(items)
 
 
-        };
-        app.current= function(title){
-document.getElementById('currently').innerHTML = title;
+            };
+            app.current= function(title){
+    document.getElementById('currently').innerHTML = title;
 
-        };
-        app.embed = function(videoId){
-          return 'https://youtube.com/embed/' +videoId;
-        };
+            };
+            app.embed = function(videoId){
+              return 'https://youtube.com/embed/' +videoId;
+            };
 
-        app.sURL = function(videoId){
+            app.sURL = function(videoId){
 
-var url ='https://www.youtube.com/watch?v=' + videoId;
-var endpoint ="/backend/index.php?url="+url;
+    var url ='https://www.youtube.com/watch?v=' + videoId;
+    var endpoint ="/backend/index.php?url="+url;
 
-$.ajax({type: "GET", url: endpoint, async: false, dataType: "text", success: function (data, textStatus, jqXHR) {s = data;} });
-          return s;
-        };
-        app.params = {"part":"snippet", "q":"efwgre", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
+    $.ajax({type: "GET", url: endpoint, async: false, dataType: "text", success: function (data, textStatus, jqXHR) {s = data;} });
+              return s;
+            };
+            app.params = {"part":"snippet", "q":"efwgre", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
 
-      </script>
+          </script></div>
+  </paper-header-panel>
+</paper-drawer-panel>
+
+
+
   </template>
 
   <script>
