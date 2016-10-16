@@ -9,10 +9,13 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/paper-styles/demo-pages.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
+<link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../../bower_components/page/page.js">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
@@ -49,15 +52,15 @@ paper-icon-button.rate-icon {
 }
 </style>
 <paper-drawer-panel>
-  <paper-header-panel drawer>
+  <paper-scroll-header-panel drawer>
     <paper-toolbar>  <div id="search"><paper-input label="Search here.."value="{{keyword::input}}" >
   <paper-icon-button suffix on-tap="ready" icon="search" alt="search" title="search">  </paper-icon-button>
     </paper-input>
 
   </div> </paper-toolbar>
-    <div> Nothing... </div>
-  </paper-header-panel>
-  <paper-header-panel main>
+    <div> Search and enjoy...<br>More stuff coming soon.. </div>
+  </paper-scroll-header-panel>
+  <paper-scroll-header-panel main>
     <paper-toolbar> <paper-button on-tap='init'> <h1>HPT</h1> </paper-button></paper-toolbar>
     <div>
           <div class="horizontal-section-container">
@@ -67,15 +70,17 @@ paper-icon-button.rate-icon {
                   url="https://www.googleapis.com/youtube/v3/search"
                   params='{{params}}'
                   handle-as="json"
+                  loading="{{loading}}"
                   last-response="{{ajaxResponse}}"></iron-ajax>
-
+  <template is="dom-if" if="{{loading}}" ><paper-spinner active ></paper-spinner></template>
       <div id="playlist">
                 <template is="dom-repeat" items="[[ajaxResponse.items]]">
                     <span id="list">
                   <paper-card class="rate">
                     <div class="rate-content">
                       <div class="card-content">
-                        <div class="rate-header"> <a  href="[[sURL(item.id.videoId,item.snippet.title)]]">
+                        <div class="rate-header">
+<a  href="[[sURL(item.id.videoId,item.snippet.title)]]">
                    <iron-icon  class="big"icon="av:play-circle-filled" ></iron-icon>
                         </a>[[item.snippet.title]] </div>
 
@@ -127,6 +132,9 @@ paper-icon-button.rate-icon {
     document.getElementById('currently').innerHTML = title;
 
             };
+      function push(title){
+alert(title)
+            };
             app.embed = function(videoId){
               return 'https://youtube.com/embed/' +videoId;
             };
@@ -142,7 +150,7 @@ paper-icon-button.rate-icon {
             app.params = {"part":"snippet", "q":"efwgre", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
 
           </script></div>
-  </paper-header-panel>
+  </paper-scroll-header-panel>
 </paper-drawer-panel>
 
 
@@ -161,12 +169,15 @@ paper-icon-button.rate-icon {
           value: 'Music',
 
         },
+        loading: {
+         type: Boolean,
+
+       }
 
       },
       ready:function(){
         var app = document.querySelector('#app');
 app.params = {"part":"snippet", "q":this.keyword, "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
-
 
 
       },
@@ -210,6 +221,12 @@ app.params = {"part":"snippet", "q":this.keyword, "key": "AIzaSyAuecFZ9xJXbGDkQY
         }
 
       },
+      thething: function(thing){
+      alert(thing)
+
+
+      },
+
 
 
 

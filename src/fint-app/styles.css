@@ -232,9 +232,23 @@ li a:hover {
     width: 500;
     margin: 0 auto;
 }
+
+
+paper-spinner{
+  position: absolute;
+
+ transform: translateY(-50%);
+   top: 2000%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
 #list{
-   position: relative;
-       margin: 0 auto;
+  margin: 0 auto;
+  width:100%;
+}
+audio{
+  width:50%;
+  left:0px;
 }
 #search{
 
@@ -247,5 +261,5 @@ li a:hover {
   width:100%;
 }
 paper-toolbar{
-  width:1--%
+  width:100%
 }
