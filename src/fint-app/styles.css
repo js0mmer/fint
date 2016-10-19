@@ -23,6 +23,13 @@ paper-icon-button.rate-icon {
 iron-selector > * {
       padding: 8px;
     }
+    #menu, #signinbutton{
+      width:100%;
+
+    }
+    .menu{
+      background-color: #eee;
+    }
     .horizontal-section {
       padding: 0;
     }

@@ -17,11 +17,13 @@
   </div> </paper-toolbar>
 
   <div id='greeting'></div>
+   <div class='menu 'id='signinbutton'><paper-button  raised on-tap="signInGPlus">Sign In With Google</paper-button></div>
   <iron-selector selected="{{selected}}">
-     <div id='signinbutton'><paper-button  raised on-tap="signInGPlus">Sign In With Google</paper-button></div>
-     <div>Home/Search</div>
-    <div id='playlistSelector'></div>
+
+     <div  class='menu '>Home/Search</div>
+    <div  class='menu ' id='playlistSelector'></div>
    </iron-selector>
+
     <div> Search and enjoy...<br>More stuff coming soon.. </div>
   </paper-scroll-header-panel>
   <paper-scroll-header-panel main>
@@ -167,19 +169,7 @@ page('/search/:id', function(context){
   console.log('Loading results for ', query);
   this.keyword= query;
     });
-//Database and Firebase
-  var config = {
-    apiKey: "AIzaSyCFbQZfcARx4whf5OnaksP6FKkhuDupU14",
-  authDomain: "finty-c6733.firebaseapp.com",
-  databaseURL: "https://finty-c6733.firebaseio.com",
-  storageBucket: "finty-c6733.appspot.com",
-  messagingSenderId: "940413361703"
-  };
-  firebase.initializeApp(config);
 
-
-   this.database = firebase.database();
-  console.log(this.database)
 
 page();
       },
@@ -217,6 +207,19 @@ $("#signinbutton").remove();
 
       },
       init: function(){
+        //Database and Firebase
+          var config = {
+            apiKey: "AIzaSyCFbQZfcARx4whf5OnaksP6FKkhuDupU14",
+          authDomain: "finty-c6733.firebaseapp.com",
+          databaseURL: "https://finty-c6733.firebaseio.com",
+          storageBucket: "finty-c6733.appspot.com",
+          messagingSenderId: "940413361703"
+          };
+          firebase.initializeApp(config);
+
+
+           this.database = firebase.database();
+          console.log(this.database)
         var audio;
         var playlist;
         var tracks;
