@@ -1,4 +1,35 @@
+:host {
+  display: block;
+}
+</style>
+<style is="custom-style">
+paper-card.rate { @apply(--layout-horizontal); }
+.rate-image {
+width: 30%;
+height: 30%;
 
+background-size: cover;
+}
+.rate-content {
+@apply(--layout-flex);
+float: left;
+}
+.rate-header { @apply(--paper-font-headline); }
+.rate-name { color: var(--paper-grey-600); margin: 10px 0; }
+paper-icon-button.rate-icon {
+--iron-icon-fill-color: white;
+--iron-icon-stroke-color: var(--paper-grey-600);
+}
+iron-selector > * {
+      padding: 8px;
+    }
+    .horizontal-section {
+      padding: 0;
+    }
+    .iron-selected {
+      background-color: white;
+      color: black;
+    }
     paper-scroll-header-panel {
       position: absolute;
       top: 0;
