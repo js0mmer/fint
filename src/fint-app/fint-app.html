@@ -163,8 +163,8 @@
         var app = document.querySelector('#app');
 app.params = {"part":"snippet", "q":this.keyword, "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
 //Routes
-page('/search/'+this.keyword);
-page('/search/:id', function(context){
+page('/#/search/'+this.keyword);
+page('/#/search/:id', function(context){
   var query = context.params.id;
   console.log('Loading results for ', query);
   this.keyword= query;
