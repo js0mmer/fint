@@ -3,7 +3,7 @@
 
 <link rel="import" href="imports.html">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/wingcss/0.1.8/wing.min.css">
 
 <dom-module id="fint-app">
   <template>
@@ -31,8 +31,8 @@
     <div>
       <iron-pages selected='{{selected}}'>
         <section>
-          <div class='main' class="horizontal-section-container">
-            <template is="dom-bind" id="app">
+          <div class='main center' class="horizontal-section-container">
+            <template is="dom-bind" class="center" id="app">
 
               <iron-ajax auto
                   url="https://www.googleapis.com/youtube/v3/search"
@@ -40,15 +40,15 @@
                   handle-as="json"
                   loading="{{loading}}"
                   last-response="{{ajaxResponse}}"></iron-ajax>
-  <template is="dom-if" if="{{loading}}" ><paper-spinner active ></paper-spinner></template>
+  <template is="dom-if" if="{{loading}}" ><paper-spinner class="center" active ></paper-spinner></template>
       <div id="playlist">
                 <template is="dom-repeat" items="[[ajaxResponse.items]]">
-                    <span id="list">
+                    <span id="list" class="center">
                   <paper-card image="[[item.snippet.thumbnails.high.url]]"class="rate">
                     <div class="rate-content">
                       <div class="card-content">
                         <div class="rate-header">
-<a  href="[[sURL(item.id.videoId,item.snippet.title)]]">
+<a  href="https://www.youtubeinmp3.com/fetch/?video=http://www.youtube.com/watch?v={{item.id.videoId}}">
                    <iron-icon  class="big"icon="av:play-circle-filled" ></iron-icon>
                         </a>[[item.snippet.title]] </div>
 
@@ -70,6 +70,9 @@
               </section>
               <section>Playlists..</section>
                 </iron-pages>
+    </div>
+            </template>
+          </div>
                 <paper-toolbar id="footer">
 
                   <audio id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg">
@@ -77,9 +80,6 @@
             Sorry, your browser does not support HTML5 audio.
         </audio>
                 </paper-toolbar>
-    </div>
-            </template>
-          </div>
 
           <script>
 
@@ -163,7 +163,6 @@
         var app = document.querySelector('#app');
 app.params = {"part":"snippet", "q":this.keyword, "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
 //Routes
-page('/#/search/'+this.keyword);
 page('/#/search/:id', function(context){
   var query = context.params.id;
   console.log('Loading results for ', query);
