@@ -1,6 +1,7 @@
 
 
 
+
 <link rel="import" href="imports.html">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/wingcss/0.1.8/wing.min.css">
@@ -10,27 +11,41 @@
 
 <paper-drawer-panel>
   <paper-scroll-header-panel drawer>
-    <paper-toolbar>  <div id="search"><paper-input label="Search here.."value="{{keyword::input}}" >
-  <paper-icon-button suffix on-tap="ready" icon="search" alt="search" title="search">  </paper-icon-button>
+    <paper-material elevation="1">
+    <paper-toolbar  style="color:black; background-color: white; width:100%;">  <div id="search"><paper-input label="Search here.."value="{{keyword::input}}" >
+  <paper-icon-button suffix on-tap="ready" id="search" icon="search" alt="search" title="search">  </paper-icon-button>
     </paper-input>
 
   </div> </paper-toolbar>
-
+<paper-material>
   <div id='greeting'></div>
-   <div class='menu 'id='signinbutton'><paper-button  raised on-tap="signInGPlus">Sign In With Google</paper-button></div>
-  <iron-selector selected="{{selected}}">
 
-     <div  class='menu '>Home/Search</div>
-    <div  class='menu ' id='playlistSelector'></div>
+<paper-button on-tap="gplus" id="login">
+  Log in with Google.
+</paper-button>
+<template is="dom-if" if="{{loggedIn}}">
+<h4>  Hi {{userInfo.displayName}} </h4>
+</template>
+
+  <iron-selector attr-for-selected="page" selected="{{selected}}">
+
+     <div page="home"  class='menu '>Home/Search</div>
+<template is="dom-if" if="{{loggedIn}}">
+          <div page="playlist"  class='menu '>Playlist</div>
+        </template>
    </iron-selector>
 
     <div> Search and enjoy...<br>More stuff coming soon.. </div>
   </paper-scroll-header-panel>
   <paper-scroll-header-panel main>
-    <paper-toolbar> <paper-button on-tap='init'> <h1>HPT</h1> </paper-button></paper-toolbar>
+    <paper-material elevation="2">
+    <paper-toolbar  style="color:black; background-color: white; width:100%;" id="mainTB">
+ <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+        <h1>Winter</h1> </paper-toolbar>
+  </paper-material>
     <div>
-      <iron-pages selected='{{selected}}'>
-        <section>
+      <iron-pages  attr-for-selected="page" selected='{{selected}}'>
+        <section page="home">
           <div class='main center' class="horizontal-section-container">
             <template is="dom-bind" class="center" id="app">
 
@@ -40,85 +55,52 @@
                   handle-as="json"
                   loading="{{loading}}"
                   last-response="{{ajaxResponse}}"></iron-ajax>
-  <template is="dom-if" if="{{loading}}" ><paper-spinner class="center" active ></paper-spinner></template>
-      <div id="playlist">
-                <template is="dom-repeat" items="[[ajaxResponse.items]]">
+
+      <div id="playlist" class="classifier" class="center">
+        <br>
+        <br>
+        <br>
+                <template class="center "is="dom-repeat" items="[[ajaxResponse.items]]">
+
                     <span id="list" class="center">
-                  <paper-card image="[[item.snippet.thumbnails.high.url]]"class="rate">
-                    <div class="rate-content">
-                      <div class="card-content">
-                        <div class="rate-header">
-<a  href="https://www.youtubeinmp3.com/fetch/?video=http://www.youtube.com/watch?v={{item.id.videoId}}">
-                   <iron-icon  class="big"icon="av:play-circle-filled" ></iron-icon>
-                        </a>[[item.snippet.title]] </div>
 
 
+                <paper-card style="width:100%;"class="center" heading="[[item.snippet.title]] " alt="[[item.snippet.title]] " class="white">
 
+                  <div class="card-actions">
+                    <a  href="https://www.youtubeinmp3.com/fetch/?video=http://www.youtube.com/watch?v={{item.id.videoId}}">
 
+                  <paper-button raised>Play</paper-button>
 
-                      <div class="card-actions">
+              </a>
 
-                      </div>
-                    </div>
-
-                  </paper-card>
+                  </div>
                 </span>
-
-
-
+                </paper-card>
+<br>
+<br>
                 </template>
-              </section>
-              <section>Playlists..</section>
-                </iron-pages>
+
+
     </div>
-            </template>
+  </template>
+</section>
+<section page="playlist">
+
+</section>
+
+  </iron-pages>
           </div>
-                <paper-toolbar id="footer">
+            <paper-material elevation="1">
+          <paper-toolbar   style="color:black; background-color: white; width:100%;" id="footer">
 
-                  <audio id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg">
-            <source type="audio/mp3" src="">
-            Sorry, your browser does not support HTML5 audio.
+            <audio id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+        <source type="audio/mp3" src="">
+        Sorry, your browser does not support HTML5 audio.
         </audio>
-                </paper-toolbar>
-
-          <script>
-
-          var app = document.querySelector('#app');
-          app.url = function (videoId) {
-            return 'https://www.youtube.com/watch?v=' + videoId;
-
-          //  document.querySelector('music-player').href = 'https://www.youtube.com/watch?v=' + videoId;
-          };
-          app.channel = function(channelId){
-            return '/#/channel/'+ channelId;
-          };
-          app.init = function(items){
-          console.log(items)
-
-
-          };
-          app.current= function(title){
-          document.getElementById('currently').innerHTML = title;
-
-          };
-          function push(title){
-          alert(title)
-          };
-          app.embed = function(videoId){
-            return 'https://youtube.com/embed/' +videoId;
-          };
-
-          app.sURL = function(videoId){
-
-          var url ='https://www.youtube.com/watch?v=' + videoId;
-          var endpoint ="/backend/index.php?url="+url;
-
-          $.ajax({type: "GET", url: endpoint, async: false, dataType: "text", success: function (data, textStatus, jqXHR) {s = data;} });
-            return s;
-          };
-          app.params = {"part":"snippet", "q":"efwgre", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
-
-          </script></div>
+          </paper-toolbar>
+        </paper-material>
+        </div>
 
   </paper-scroll-header-panel>
 </paper-drawer-panel>
@@ -137,8 +119,16 @@
         keyword: {
           type: String,
           value: 'Music',
+          observer: "ready",
 
 
+
+        },
+        SingleSongSrc:{
+          type:String,
+        },
+        SingleSongTitle:{
+          type:String,
         },
         database: {
           type: Object,
@@ -153,72 +143,110 @@
        token:{
          type:Object,
        },
+       params:{
+         type:Object,
+       },
        selected:{
-         type:Number,
-         value:0,
+         type:String,
+         value:"home",
+       },
+       userInfo:{
+         type:Object,
+       },
+       loggedIn:{
+         type: Boolean,
+
        },
 
       },
       ready:function(){
+        //ETC....
+        var elem = document.getElementById("search");
+elem.onkeyup = function(e){
+    if(e.keyCode == 13){
+      var drawer = document.querySelector('paper-drawer-panel');
+      drawer.closeDrawer();
+
+    }
+}
         var app = document.querySelector('#app');
-app.params = {"part":"snippet", "q":this.keyword, "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}
+app.params = {"part":"snippet", "q":this.keyword, "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"};
+//remove function
+Element.prototype.remove = function() {
+this.parentElement.removeChild(this);
+}
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+for(var i = this.length - 1; i >= 0; i--) {
+if(this[i] && this[i].parentElement) {
+this[i].parentElement.removeChild(this[i]);
+}
+}
+}
 //Routes
-page('/#/search/:id', function(context){
+
+page('/search/:id', function(context){
   var query = context.params.id;
   console.log('Loading results for ', query);
   this.keyword= query;
     });
+    page('/:page', function(context){
+      var page = context.params.page;
 
+      this.selected=page;
+
+        });
 
 page();
-      },
-      signInGPlus: function(){
-
-        var provider = new firebase.auth.GoogleAuthProvider();
-        provider.addScope('https://www.googleapis.com/auth/plus.login');
-        firebase.auth().signInWithPopup(provider).then(function(result) {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-        this.token = result.credential.accessToken;
-          // The signed-in user info.
-           this.user = result.user;
-      console.log(this.user, this.token);
-      console.log(this.user.displayName)
-      greeting = document.querySelector('#greeting');
-      greeting.innerHTML = '<paper-card image="'+this.user.photoURL+'"><h1>Hi, '+this.user.displayName+' </h1></paper-card>';
-playlistSelector = document.querySelector('#playlistSelector');
-playlistSelector.innerHTML='Playlist'
-$("#signinbutton").remove();
-          // ...
-        }).catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          alert('Error logging into Google Plus..', 'You must have done something wrong, or it is just me, just assume it was me :)')
-          var errorMessage = error.message;
-          // The email of the user's account used.
-          var email = error.email;
-          // The firebase.auth.AuthCredential type that was used.
-          var credential = error.credential;
-          // ...
-
-      });
-
-
+//AUTOPLAY INIT SETUP
+var rec = function() {
+  setTimeout(function() {
+    if ($('audio').length > 0) {
+    document.querySelector("fint-app").init();
+    } else
+        rec();
+  }, 10);
+}
+rec();
+//FIREBASE.........
 
       },
+gplus:function(){
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(function(result) {
+    $("#login").remove();
+    document.querySelector("#login").remove();
+    $("#login").innerHTML = null;
+    document.querySelector("#login").innerHTML = null;
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    var token = result.credential.accessToken;
+    // The signed-in user info.
+    var user = result.user;
+    document.querySelector("fint-app").userInfo = user;
+    console.log(document.querySelector("fint-app").userInfo);
+    document.querySelector("fint-app").loggedIn=true;
+    console.log(document.querySelector("fint-app").loggedIn);
+
+
+    // ...
+  }).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+  });
+
+},
+
+
+
+
       init: function(){
-        //Database and Firebase
-          var config = {
-            apiKey: "AIzaSyCFbQZfcARx4whf5OnaksP6FKkhuDupU14",
-          authDomain: "finty-c6733.firebaseapp.com",
-          databaseURL: "https://finty-c6733.firebaseio.com",
-          storageBucket: "finty-c6733.appspot.com",
-          messagingSenderId: "940413361703"
-          };
-          firebase.initializeApp(config);
 
 
-           this.database = firebase.database();
-          console.log(this.database)
         var audio;
         var playlist;
         var tracks;
@@ -258,8 +286,9 @@ $("#signinbutton").remove();
         }
 
       },
-      thething: function(thing){
-      alert(thing)
+      search: function(){
+        var app = document.querySelector('#app');
+      app.params = {"part":"snippet", "q":this.keyword, "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"};
 
 
       },

@@ -224,8 +224,10 @@ Custom property                             | Description                       
         <div id="title" class="fit">{{ title }}</div>
 
         <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ src }}"></audio>
-
+        <audio id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+    <source type="audio/mp3" src="">
+    Sorry, your browser does not support HTML5 audio.
+    </audio>
         <!-- Progress bar -->
         <div id="progress" class="fit"></div>
 
